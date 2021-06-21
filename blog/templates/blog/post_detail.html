@@ -1,5 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Post Detail</h1>
+  <h1 class="post-title loader">{{ post.title }}</h1>
+  {% if post.published_at %}
+    <div class="date post-date">{{ post.published_at }}</div>
+  {% else %}
+    <a href="{% url 'publish_post' pk=post.pk %}">
+      <button class="btn btn-primary">Publish</button>
+    </a>
+  {% endif %}
+
+  <p class="post-body">{{ post.body|safe|linebreaksbr }}</p>
+
+  {% if user.is_authenticated %}
+    <a href="{% url 'post_edit' pk=post.pk %}" class="link-btn">
+      <button class="btn btn-primary">Edit</button>
+    </a>
+    <a href="{% url 'post_remove' pk=post.pk %}" class="link-btn">
+      <button class="btn btn-danger">Delete</button>
+    </a>
+  {% endif %}
+
+  <hr>
+
+  <a href="{% url 'add_comment_to_post' pk=post.pk %}" class="link-btn">
+    <button class="btn btn-primary">Leave a comment</button>
+  </a>
+
+  <div class="container">
+    {% for comment in post.comments.all %}
+      <br>
+      {% if user.is_authenticated or comment.approved %}
+        <span>{{ comment.creatd_date }}</span>
+        {% if not comment.approved %}
+          <a href="{% url 'approve_comment' pk=comment.pk %}" class="link-btn">
+            <button class="btn btn-primary">Approve</button>
+          </a>
+          <a href="{% url 'remove_comment' pk=comment.pk %}" class="link-btn">
+            <button class="btn btn-danger">Delete</button>
+          </a>
+        {% endif %}
+
+        <p>{{ comment.body|safe|linebreaks }}</p>
+        <p>Posted by: {{ comment.author }}</p>
+      {% endif %}
+      {% empty %}
+      <p>No comments</p>
+    {% endfor %}
+  </div>
 {% endblock %}

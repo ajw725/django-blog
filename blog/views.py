@@ -53,7 +53,8 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 class DraftListView(LoginRequiredMixin, ListView):
     model = Post
     login_url = '/login/'
-    redirect_field_name = 'blog/post_list.html'
+    redirect_field_name = 'blog/post_drafts.html'
+    template_name = 'blog/post_drafts.html'
 
     def get_queryset(self):
         return Post.objects.filter(published_at__isnull=True).order_by('created_at')
@@ -81,7 +82,7 @@ def add_comment_to_post(request, pk):
     else:
         form = CommentForm()
 
-    return render(request, 'blog/comment_form.html', {form: form})
+    return render(request, 'blog/comment_form.html', {'form': form})
 
 
 @login_required

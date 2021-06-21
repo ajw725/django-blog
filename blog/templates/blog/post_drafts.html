@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Drafts</h1>
+  <h1>Drafts</h1>
+
+  {% for post in post_list %}
+    <div class="posts">
+      <p class="date">Created: {{ post.created_at|date:'d-m-Y' }}</p>
+      <h2>
+        <a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a>
+      </h2>
+      <p>{{ post.body|truncatechars:255 }}</p>
+    </div>
+  {% endfor %}
 {% endblock %}
